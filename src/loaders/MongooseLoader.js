@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import fileLogger from "../common/logging/file-logger.js";
+import streamLogger from "../common/logging/stream-logger.js";
 
 const environment = process.env.NODE_ENV || "dev";
 const uri =
@@ -22,22 +24,39 @@ const launchDB = () => {
         mongoose.connect(process.env.LOCAL_DB_URl, options);
         const db = mongoose.connection;
         db.on("connected", () => {
-            console.log("Connected to the database");
+            streamLogger.log({
+                level: "info",
+                message: `Connecting to Database  @${new Date().toISOString()}`,
+            });
         });
         db.on("disconnected", () => {
-            console.log("Disconnected from the database");
+            streamLogger.log({
+                level: "info",
+                message: `Disconnecting from Database @${new Date().toISOString()}`,
+            });
         });
         db.on("error", () => {
-            console.log("An Error occured");
+            fileLogger.log({
+                level: "error",
+                message: `DB Error occured @${new Date().toISOString()}`,
+            });
         });
         process.on("SIGINT", () => {
             mongoose.connection.close(() => {
-                console.log("Mongoose terminated. Process ended");
+                streamLogger.log({
+                    level: "info",
+                    message: `Killing Conection @${new Date().toISOString()}`,
+                });
             });
             process.exit(0);
         });
     } catch (error) {
-        console.error(error);
+        fileLogger.log({
+            level: "error",
+            message: `${error.name}  : ${
+                error.message
+            } : Time ${new Date().toISOString()}`,
+        });
     }
 };
 
