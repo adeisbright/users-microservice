@@ -1,4 +1,4 @@
-import UserDAL from "./user.DAL";
+import UserDAL from "./user.DAL.js";
 
 class UserService {
     static async addUser(doc) {
@@ -17,4 +17,4 @@ class UserService {
     }
 }
 
-module.exports = UserService;
+export default UserService;

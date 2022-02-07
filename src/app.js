@@ -3,19 +3,18 @@ import express from "express";
 import cors from "cors";
 import compression from "compression";
 import helmet from "helmet";
-import UserRouter from "./services/";
-import MongooseLoader from "./loaders/MongooseLoader";
+import userRouter from "./services/users/user.routes.js";
+import launchDB from "./loaders/MongooseLoader.js";
 
 dotenv.config();
-
+const app = express();
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(helmet());
 app.use(cors());
 
-MongooseLoader();
+launchDB();
 
-app.use("/", UserRouter);
+app.use("/", userRouter);
 app.listen(5000, () => console.log("Running"));
-//module.exports = app;

@@ -1,10 +1,10 @@
 import express from "express";
-import UserController from "./user.controller";
+import UserController from "./user.controller.js";
 
 const { handleAddUser, handleGetUsers } = UserController;
 
-const UserRouter = express.Router();
+const userRouter = express.Router();
 
-UserRouter.route("/users").get(handleGetUsers).post(handleAddUser);
+userRouter.route("/users").get(handleGetUsers).post(handleAddUser);
 
-module.exports = UserRouter;
+export default userRouter;

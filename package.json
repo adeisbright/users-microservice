@@ -2,10 +2,10 @@
   "name": "users-service",
   "version": "1.0.0",
   "description": "A Microservice that handles user management",
-  "type" : "module",
+  "type": "module",
   "scripts": {
-    "start" : "node ../src/app" , 
-    "devstart": "nodemon ../src/app" , 
+    "start": "node ./src/app",
+    "devstart": "nodemon ./src/app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -32,6 +32,7 @@
     "chai-http": "^4.3.0",
     "faker": "^6.6.6",
     "mocha": "^9.2.0",
+    "nodemon": "^2.0.15",
     "nyc": "^15.1.0",
     "sinon": "^13.0.0"
   }

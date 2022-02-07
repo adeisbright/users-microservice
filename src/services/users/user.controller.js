@@ -1,4 +1,4 @@
-import UserService from "./user.service";
+import UserService from "./user.service.js";
 
 class UserController {
     async handleAddUser(req, res) {
@@ -10,14 +10,14 @@ class UserController {
         }
     }
 
-    async handleGetUsers() {
+    async handleGetUsers(req, res) {
         try {
             const users = await UserService.getUsers();
-            res.status(201).json(users);
+            res.status(200).json(users);
         } catch (error) {
             res.status(500).json(error);
         }
     }
 }
 
-module.exports = UserController;
+export default new UserController();
