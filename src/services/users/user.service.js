@@ -9,7 +9,7 @@ class UserService {
         };
     }
     static async getUsers() {
-        let result = await UserDAL.find();
+        let result = await UserDAL.getUsers();
         return {
             status: "OK",
             data: result,
