@@ -7,8 +7,9 @@ import userRouter from "./services/users/user.routes.js";
 import launchDB from "./loaders/MongooseLoader.js";
 import errorHandler from "./common/error-handler/error-handler.js";
 import httpLogger from "./common/logging/http-logger.js";
-import mailingJob from "./job/mailing-job.js";
+import mailingJob from "./job/job.js";
 import userService from "./services/users/user.service.js";
+import readFromChannel from "./rabbit-queue/read-channel.js";
 
 dotenv.config();
 const app = express();
@@ -30,14 +31,13 @@ const listTotalUsers = async () => {
     const results = await userService.getUsers();
     console.log(results.data.length);
 };
-const printHey = () => console.log("Hey");
 
-const addNum = () => console.log("Why");
+//mailingJob(listTotalUsers, "* 5 * * * 1-3");
+const logData = async (data) => {
+    console.log(await data.content.toString());
+};
+readFromChannel("how", logData, false);
 
-//Task Gating => Can Task Be automatically scheduled ?
-mailingJob(listTotalUsers, "*/3 * * * * *");
-// mailingJob(printHey);
-// mailingJob(addNum);
 app.use("/", userRouter);
 app.use(errorHandler);
 
