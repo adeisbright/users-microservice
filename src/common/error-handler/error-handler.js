@@ -1,12 +1,8 @@
 import ErrorAlert from "../error-reporting/ErrorAlert.js";
 import fileLogger from "../logging/file-logger.js";
+import ApplicationError from "./ApplicationError.js";
 
 const errorHandler = (err, req, res, next) => {
-    console.log(err.stack);
-    console.log(err.code);
-    console.log(err.address, err.errno, err.dest);
-    console.log(err.info);
-    console.log(err.path);
     let errorAlert = new ErrorAlert(err.message, err.name);
     errorAlert.notify();
 
@@ -17,7 +13,12 @@ const errorHandler = (err, req, res, next) => {
         level: "error",
     });
 
-    res.status(err.statusCode).json(err);
+    if (err instanceof ApplicationError) {
+        //res.status(err.statusCode).json({ message: err.message });
+        res.status(500).json({ message: "ERROR 500 : Internal Server Error" });
+    } else {
+        res.status(err.statusCode).json({ message: err.message });
+    }
 };
 
 export default errorHandler;

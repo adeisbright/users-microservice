@@ -5,15 +5,19 @@ class UserService {
         let result = await UserDAL.addUser(doc);
         return {
             status: "OK",
-            data: result,
+            data: result.details(),
         };
     }
-    static async getUsers() {
-        let result = await UserDAL.getUsers();
+    static async getUsers(limit = 2, skip = 0) {
+        let result = await UserDAL.getUsers(limit, skip);
         return {
             status: "OK",
             data: result,
         };
+    }
+
+    static async getUser(param, isId = true) {
+        return await UserDAL.getUser(param, isId);
     }
 }
 

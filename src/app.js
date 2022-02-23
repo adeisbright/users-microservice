@@ -10,6 +10,7 @@ import httpLogger from "./common/logging/http-logger.js";
 import mailingJob from "./job/job.js";
 import userService from "./services/users/user.service.js";
 import readFromChannel from "./rabbit-queue/read-channel.js";
+import redisLoader from "./loaders/RedisLoader.js";
 
 dotenv.config();
 const app = express();
@@ -29,10 +30,30 @@ launchDB();
  */
 const listTotalUsers = async () => {
     const results = await userService.getUsers();
+
     console.log(results.data.length);
 };
 
-//mailingJob(listTotalUsers, "* 5 * * * 1-3");
+// Read the first 100 elements ever inserted
+// Use the id of the last element read to skip and read the next 100 elements
+// Continue till there is no longer any data to read again then you shut the cron job
+// Use Redis to Hold the id for the duration the cron jobs run
+
+const readFromUsers = async () => {
+    try {
+        const doc = await redisLoader.get("id");
+        if (!doc) {
+            redisLoader.set("id", "Adeleke");
+            redisLoader.expire("id", 3000);
+        }
+        return doc;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+//mailingJob(readFromUsers, "* */1 * * * 1-3");
+
 const logData = async (data) => {
     console.log(await data.content.toString());
 };
@@ -41,4 +62,4 @@ readFromChannel("how", logData, false);
 app.use("/", userRouter);
 app.use(errorHandler);
 
-app.listen(5000, () => console.log("Running"));
+app.listen(5500, () => console.log("Running"));

@@ -50,12 +50,7 @@ const faker = (roofNum) => {
 class UserController {
     async handleAddUser(req, res, next) {
         try {
-            const body = {
-                name: faker(10).name,
-                email: faker(10).email,
-                pwd: faker(10).pwd,
-            };
-            const user = await UserService.addUser(body);
+            const user = await UserService.addUser(req.body);
             //await messageChannel("user_registration", user.data);
             await messageExchange(user.data, "notification4", "fanout", "food");
             res.status(201).json(user);
@@ -66,11 +61,65 @@ class UserController {
 
     async handleGetUsers(req, res, next) {
         try {
-            const users = await UserService.getUsers();
+            const { page_no, limit, filter } = req.query;
+            const pageNumber = Math.abs(parseInt(page_no)) || 1;
+            const docLimit = parseInt(limit) || 10;
+            const skip = docLimit * (pageNumber - 1);
+            const options = {};
+            if (filter) {
+                const filters = filter.replace(" ", "").split(",");
+                filters.map((e) => (options[e.trim()] = 1));
+            }
+
+            const users = await UserService.getUsers(docLimit, skip, options);
             res.status(200).json(users);
         } catch (error) {
             return next(new ApplicationError(error));
         }
+    }
+
+    async getUser(req, res, next) {
+        try {
+            const user = await UserService.getUser(req.params.id);
+            res.status(200).json(user.details());
+        } catch (error) {
+            return next(new ApplicationError(error));
+        }
+    }
+
+    async handleLogin(req, res, next) {
+        try {
+            const { email, pwd } = req.body;
+            let authEmail = {
+                email: new RegExp(`^${email}$`, "i"),
+            };
+            let user = await UserService.getUser(authEmail, false);
+            if (!user) {
+                return next(
+                    new NotFoundError(
+                        "We could not find an account with this email"
+                    )
+                );
+            }
+            if (!user.checkPassword(pwd)) {
+                return next(new NotAuthorizeError("Invalid Login Detail"));
+            }
+            //Create a Login Successful Event and Send To queue
+            const token = user.grantToken();
+            user = user.details();
+            user.token = token;
+            //Also Generate a refresh Token
+            res.status(200).json({
+                ...user,
+            });
+        } catch (error) {
+            return next(new ApplicationError(error));
+        }
+    }
+
+    async getToken(req, res, next) {
+        //Get the refreshToken from the user
+        // Check the Dataabse to see if the token is valid ,blacklisted  , etc
     }
 }
 
