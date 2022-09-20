@@ -51,19 +51,23 @@ class UserController {
     async handleAddUser(req, res, next) {
         try {
             const user = await UserService.addUser(req.body);
-            //await messageChannel("user_registration", user.data);
-            await messageExchange(user.data, "notification4", "fanout", "food");
+            const data = {
+                index: "users",
+                id: user.data._id,
+                body: user.data,
+            };
+            await messageExchange(data, "es", "fanout", "esKey");
             res.status(201).json(user);
         } catch (error) {
             return next(new ApplicationError(error));
         }
     }
-
+ 
     async handleGetUsers(req, res, next) {
         try {
             const { page_no, limit, filter } = req.query;
             const pageNumber = Math.abs(parseInt(page_no)) || 1;
-            const docLimit = parseInt(limit) || 10;
+            const docLimit = parseInt(limit) || 5;
             const skip = docLimit * (pageNumber - 1);
             const options = {};
             if (filter) {

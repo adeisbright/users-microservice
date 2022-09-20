@@ -8,7 +8,7 @@ class UserService {
             data: result.details(),
         };
     }
-    static async getUsers(limit = 2, skip = 0) {
+    static async getUsers(limit = 5, skip = 0) {
         let result = await UserDAL.getUsers(limit, skip);
         return {
             status: "OK",

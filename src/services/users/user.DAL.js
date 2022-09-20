@@ -5,7 +5,7 @@ class UserDAL {
         return await userModel.create(doc);
     }
 
-    static async getUsers(limit = 2, skip = 0, filter = {}) {
+    static async getUsers(limit = 5, skip = 0, filter = {}) {
         return await userModel
             .find()
             .skip(skip)

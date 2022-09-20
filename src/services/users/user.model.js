@@ -14,7 +14,9 @@ const userSchema = new Schema(
         pwd: String,
         name: String,
         ucode: String,
+        date :  Date 
     },
+    
     {
         timestamps: true,
     }
