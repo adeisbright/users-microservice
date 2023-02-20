@@ -5,12 +5,11 @@ class UserDAL {
         return await userModel.create(doc);
     }
 
-    static async getUsers(limit = 5, skip = 0, filter = {}) {
+    static async getUsers(limit = 15, skip = 0, filter = {}) {
         return await userModel
-            .find()
+            .find({} , {pwd: 0})
             .skip(skip)
             .limit(limit)
-            .select(filter)
             .lean();
     }
     /**
