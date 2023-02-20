@@ -7,10 +7,7 @@ dotenv.config();
 const { promisify } = util;
 
 // Connecting to local cluster
-const client = redis.createClient({
-    host: "127.0.0.1",
-    port: "6378",
-});
+const client = redis.createClient({});
 
 try {
     // Promisify redis client to work with Async-Await

@@ -67,7 +67,7 @@ class UserController {
         try {
             const { page_no, limit, filter } = req.query;
             const pageNumber = Math.abs(parseInt(page_no)) || 1;
-            const docLimit = parseInt(limit) || 5;
+            const docLimit = parseInt(limit) || 15;
             const skip = docLimit * (pageNumber - 1);
             const options = {};
             if (filter) {
