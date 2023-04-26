@@ -39,25 +39,25 @@ const listTotalUsers = async () => {
 // Continue till there is no longer any data to read again then you shut the cron job
 // Use Redis to Hold the id for the duration the cron jobs run
 
-const readFromUsers = async () => {
-    try {
-        const doc = await redisLoader.get("id");
-        if (!doc) {
-            redisLoader.set("id", "Adeleke");
-            redisLoader.expire("id", 3000);
-        }
-        return doc;
-    } catch (error) {
-        console.error(error);
-    }
-};
+// const readFromUsers = async () => {
+//     try {
+//         const doc = await redisLoader.get("id");
+//         if (!doc) {
+//             redisLoader.set("id", "Adeleke");
+//             redisLoader.expire("id", 3000);
+//         }
+//         return doc;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// };
 
 //mailingJob(readFromUsers, "* */1 * * * 1-3");
 
-const logData = async (data) => {
-    console.log(await data.content.toString());
-};
-readFromChannel("how", logData, false);
+// const logData = async (data) => {
+//     console.log(await data.content.toString());
+// };
+// readFromChannel("how", logData, false);
 
 app.use("/", userRouter);
 app.use(errorHandler);
