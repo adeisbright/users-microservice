@@ -19,6 +19,15 @@ class UserService {
     static async getUser(param, isId = true) {
         return await UserDAL.getUser(param, isId);
     }
+
+    static async removeUser(id) {
+        return await UserDAL.removeUser(id);
+    }
+
+    static async updateUser(id , data) {
+        return await UserDAL.updateUser(id , data)
+    }
 }
+
 
 export default UserService;

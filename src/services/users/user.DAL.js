@@ -28,6 +28,17 @@ class UserDAL {
         }
         return await userModel.findOne(param);
     }
+
+    static async removeUser(id) {
+        return await userModel.findByIdAndRemove(id);
+    }
+
+    static async updateUser(id , data) {
+        return await userModel.findByIdAndUpdate(id, data, {
+            new: true, 
+            useFindAndModify : false
+        })
+    }
 }
 
 export default UserDAL;
